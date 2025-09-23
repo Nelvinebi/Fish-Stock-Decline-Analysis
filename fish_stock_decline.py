@@ -1,0 +1,64 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.linear_model import LinearRegression
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Generate synthetic dataset (>100 points)
+n_points = 150
+years = np.arange(2000, 2000 + n_points)  # simulate years for each observation
+water_quality_index = np.random.uniform(50, 90, n_points)  # 0-100 scale
+fishing_effort = np.random.uniform(20, 80, n_points)  # fishing hours/week
+habitat_loss = np.random.uniform(0, 30, n_points)  # % loss of habitat
+
+# Fish stock declines with poorer water quality, more fishing, and habitat loss
+fish_stock_tons = (
+    200
+    - (100 - water_quality_index) * 1.5
+    - fishing_effort * 0.8
+    - habitat_loss * 2.0
+    + np.random.normal(0, 5, n_points)  # add noise
+)
+
+# Create DataFrame
+df = pd.DataFrame({
+    'Year': years,
+    'Water_Quality_Index': water_quality_index,
+    'Fishing_Effort_hours_per_week': fishing_effort,
+    'Habitat_Loss_percent': habitat_loss,
+    'Fish_Stock_tons': fish_stock_tons
+})
+
+# Save to Excel
+df.to_excel('fish_stock_decline_synthetic.xlsx', index=False)
+
+# Exploratory Data Analysis: Pairplot
+sns.pairplot(df[['Water_Quality_Index', 'Fishing_Effort_hours_per_week',
+                 'Habitat_Loss_percent', 'Fish_Stock_tons']])
+plt.suptitle("Pairplot of Environmental Factors vs Fish Stock", y=1.02)
+plt.show()
+
+# Correlation Heatmap
+plt.figure(figsize=(8, 6))
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+plt.title("Correlation Matrix")
+plt.show()
+
+# Simple regression: Predict fish stock from environmental variables
+X = df[['Water_Quality_Index', 'Fishing_Effort_hours_per_week', 'Habitat_Loss_percent']]
+y = df['Fish_Stock_tons']
+model = LinearRegression()
+model.fit(X, y)
+
+# Print coefficients
+coef_df = pd.DataFrame({
+    'Variable': X.columns,
+    'Coefficient': model.coef_
+})
+print("Regression Coefficients:")
+print(coef_df)
+print(f"Intercept: {model.intercept_:.2f}")
+print(f"Model R²: {model.score(X, y):.3f}")
