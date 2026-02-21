@@ -66,7 +66,12 @@ Poor water quality negatively impacts fish populations.
 The model achieves a high R² value indicating strong predictive accuracy.
 
 👤 Author
+
 Agbozu Ebingiye Nelvin
+
 📧 Email: nelvinebingiye@gmail.com
+
 💻 GitHub: https://github.com/Nelvinebi
+
+LinkedIn: *https://www.linkedin.com/in/agbozu-ebi/
 
